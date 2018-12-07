@@ -5,7 +5,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 500 },
             debug: false
         }
     },
@@ -15,8 +15,10 @@ var config = {
         update: update
     }
 };
-
+var player;
+var cursors;
 var game = new Phaser.Game(config);
+
 
 function preload ()
 {
@@ -27,8 +29,6 @@ function preload ()
 }
 
 var platforms;
-var cursors;
-var players;
 
 function create () {
     this.add.image(400, 300, 'sky');
@@ -41,18 +41,34 @@ function create () {
     platforms.create(750, 220, 'ground');
 
 
-    player = this.physics.add.sprite(100, 450, 'hero').setScale(1.5);
+    player = this.physics.add.sprite(100, 450, 'hero').setScale(.5);
 
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
+
+    cursors = this.input.keyboard.createCursorKeys();
     this.physics.add.collider(player, platforms);
 
-    this.key_A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    
 }
 
-function update (delta)
+function update ()
 {
-   if(this.key_A.isDown) {
-       this.image.x--;
-   }
+    if (cursors.left.isDown)
+    {
+        player.setVelocityX(-160);
+    }
+    else if (cursors.right.isDown)
+    {
+        player.setVelocityX(160);
+    }
+    else
+    {
+        player.setVelocityX(0);
+    }
+
+    if (cursors.up.isDown && player.body.touching.down)
+    {
+        player.setVelocityY(-330);
+    }
 }
